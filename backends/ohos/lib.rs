@@ -14,9 +14,8 @@ use servo_media::{
     Backend, BackendInit, BackendMsg, ClientContextId, MediaInstance, SupportsMediaType,
 };
 
-use crate::{player::OhosAVPlayer, registry_scanner::OHOS_REGISTRY_SCANNER};
+use crate::player::OhosAVPlayer;
 mod player;
-mod registry_scanner;
 
 pub struct OhosBackend {
     instances: Arc<Mutex<HashMap<ClientContextId, Vec<(usize, Weak<Mutex<dyn MediaInstance>>)>>>>,
@@ -157,23 +156,7 @@ impl Backend for OhosBackend {
     }
 
     fn can_play_type(&self, media_type: &str) -> servo_media::SupportsMediaType {
-        if let Ok(mime) = media_type.parse::<Mime>() {
-            let mime_type = mime.type_().as_str().to_owned() + "/" + mime.subtype().as_str();
-            let codecs = match mime.get_param("codecs") {
-                Some(codecs) => codecs
-                    .as_str()
-                    .split(',')
-                    .map(|codec| codec.trim())
-                    .collect(),
-                None => vec![],
-            };
-            if OHOS_REGISTRY_SCANNER.contains(mime_type.as_str()) {
-                if codecs.is_empty() {
-                    return SupportsMediaType::Maybe;
-                }
-            }
-        }
-        SupportsMediaType::No
+        todo!()
     }
 
     fn get_device_monitor(
